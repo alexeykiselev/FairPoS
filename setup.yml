@@ -1,0 +1,18 @@
+---
+- hosts: fairpos
+  become: yes
+  tasks:
+    - name: Add Oracle Java repository
+      apt_repository:
+        repo: ppa:webupd8team/java
+        state: present
+
+    - name: Accept Oracle Java License
+      debconf: >
+        name=oracle-java8-installer question=shared/accepted-oracle-license-v1-1 value=true vtype=select
+      when: java_from_oracle|bool
+
+    - name: Update repositories cache and install Oracle Java 8
+      apt:
+        name: oracle-java8-installer
+        update_cache: yes

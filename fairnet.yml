@@ -1,0 +1,57 @@
+---
+- hosts: nodes
+  become: yes
+  roles:
+     - role: ansiblebit.oracle-java
+       oracle_java_set_as_default: yes
+  tasks:
+    - name: Update all DEB packages
+      apt:
+        update_cache: yes
+        autoclean: yes
+        autoremove: yes
+        upgrade: dist
+
+    - name: Copy Waves DEB package
+      copy:
+        src: "{{ item }}"
+        dest: /root/waves.deb
+      with_fileglob:
+        - ~/git/wavesplatform/Waves/target/waves_*_all.deb
+    
+    - name: Install DEB package
+      apt:
+        deb: /root/waves.deb
+
+    - name: Drop state files and wallet
+      file:
+        state: absent
+        path: "/var/lib/waves/{{item}}/"
+      with_items:
+        - data
+        - wallet
+
+    - name: Copy waves.conf
+      template:
+        src: waves.conf.j2
+        dest: /etc/waves/waves.conf
+        owner: waves
+        group: waves
+        mode: 0600
+    
+    - name: Copy other configuration files
+      copy:
+        src: "{{ item }}"
+        dest: /etc/waves/
+        owner: waves
+        group: waves
+        mode: 0600
+      with_items:
+        - application.ini
+        - logback.xml
+
+    - name: Restart Waves service
+      service:
+        name: waves
+        state: restarted
+        enabled: yes

@@ -1,0 +1,71 @@
+waves {
+  blockchain {
+    type: CUSTOM
+    custom {
+      address-scheme-character: "F"
+      functionality {
+        feature-check-blocks-period = 5
+        blocks-for-feature-activation = 4
+        allow-temporary-negative-until: 1477958400000
+        allow-invalid-payment-transactions-by-timestamp: 1477958400000
+        require-sorted-transactions-after: 1477958400000
+        generation-balance-depth-from-50-to-1000-after-height: 0
+        minimal-generating-balance-after: 0
+        allow-transactions-from-future-until: 0
+        allow-unissued-assets-until: 1479416400000
+        require-payment-unique-id-after: 0
+        allow-invalid-reissue-in-same-block-until-timestamp: 0
+        allow-multiple-lease-cancel-transaction-until-timestamp: 1492128000000
+        reset-effective-balances-at-height: 1000000000
+        block-version-3-after-height: 0
+        pre-activated-features {1=0,2=0,3=0,4=0,5=0,6=0,7=0,8=0}
+        double-features-periods-after-height: 1000000000
+      }
+      genesis {
+        average-block-delay: 20000ms
+        initial-base-target: 15372286
+        timestamp: 1525697040673
+        block-timestamp: 1525697040673
+        signature: "2uRKLgW4yQprgfRfvPiMgF47kUz5szcUs4e7meNEuDeBRk5a3SaTKUoNKX93e6LwDTJt3Cznfm8iuuj6dbP4kYcV"
+        initial-balance: 10000000000000000
+        transactions = [
+          {recipient: "3GPSWrN88kD8sL5FGUM5kQP6nMPaDE6Adkf", amount: 1000000000000000},
+          {recipient: "3GZhyDMsFp5qZeK5m1J7QjKaoc1qggkPkdB", amount: 8550000000000000},
+          {recipient: "3GGE64sfB5qAc3gQ4tdLyxCmTXWNoTYg193", amount: 100000000000000},
+          {recipient: "3GKLUZkvHiDqhyG8k5ynUitzgrtDpf8NWpg", amount: 300000000000000},
+          {recipient: "3GBgwqJPNoU9WRGY6MTWan8AxQm8NvA8xqF", amount: 50000000000000}
+        ]
+      }
+    }
+  }
+
+  network {
+    bind-address = "0.0.0.0"
+    port = 6864
+    known-peers = ["{{ hostvars[groups['nodes'][0]].address }}:6864","{{ hostvars[groups['nodes'][1]].address }}:6864","{{ hostvars[groups['nodes'][2]].address }}:6864"] 
+    node-name = "FairNet"
+    declared-address = "{{ address }}:6864"
+  }
+
+  wallet {
+    password = "fair-net-wallet-password"
+    seed = "{{ seed }}"
+  }
+
+  matcher.enable = false
+
+  rest-api {
+    enable = yes
+    bind-address = "0.0.0.0"
+    port = 6869
+    api-key-hash = "7B74gZMpdzQSB45A7KRwKW6mDUYaWhFY8kWh5qiLRRoA"
+    api-key-different-host = yes
+  }
+
+  synchronization {
+    synchronization-timeout = 120s
+  }
+  miner {
+    interval-after-last-block-then-generation-is-allowed = 365d
+  }
+}
